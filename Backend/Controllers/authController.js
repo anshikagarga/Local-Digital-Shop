@@ -1,6 +1,6 @@
 import {
     registerService,
-    loginService,
+    loginService, getProfileService,
 } from "../services/authService.js";
 
 export const registerUser = async (req, res) => {
@@ -45,4 +45,28 @@ export const loginUser = async (req, res) => {
         });
 
     }
+};
+
+
+export const getProfileUser = async (req, res) => {
+
+    try {
+
+        const user = await getProfileService(req.user.id);
+
+        res.status(200).json({
+            success: true,
+            message: "Profile fetched successfully",
+            data: user,
+        });
+
+    } catch (error) {
+
+        res.status(404).json({
+            success: false,
+            message: error.message,
+        });
+
+    }
+
 };
