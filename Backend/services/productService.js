@@ -24,3 +24,43 @@ export const getProductByIdService = async (id) => {
     }
     return product;
 }
+
+
+export const updateProductService = async (
+    productId,
+    updateData,
+    userId
+) => {
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+        throw new Error("Product not found");
+    }
+
+    if (product.seller.toString() !== userId.toString()) {
+        throw new Error("Unauthorized");
+    }
+
+    Object.assign(product, updateData);
+
+    await product.save();
+
+    return product;
+};
+
+
+export const deleteProductService = async(productId, userId) => {
+    const product = await Product.findById(productId);
+    if(!product){
+        throw new Error("Product not found");
+    }
+
+    if(product.seller.toString() != userId.toString()){
+        throw new Error("unauthorized");
+    }
+
+    await Product.findByIdAndDelete(productId);
+
+    return;
+}
