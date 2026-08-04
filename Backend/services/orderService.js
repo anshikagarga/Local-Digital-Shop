@@ -36,3 +36,56 @@ export const placeOrderService = async (userId, orderData) => {
 
     return order;
 };
+
+export const getMyOrdersService = async (userId) => {
+
+    const orders = await Order.find({
+        user: userId,
+    })
+    .populate("items.product", "productName price image")
+    .sort({ createdAt: -1 });
+
+    return orders;
+
+};
+
+export const getOrderByIdService = async (orderId, userId) => {
+    const order = await Order.findById(orderId)
+    .populate("items.product", "productName price image");
+
+    if (!order) {
+        throw new Error("Order not found");
+    }
+
+    if(order.user.toString() != userId.toString()){
+        throw new Error("Not authorized to view this order");
+    }
+
+    return order;
+}
+
+export const cancelOrderService = async (orderId, userId) => {
+    const order = await Order.findById(orderId);
+    if(!order){
+        throw new Error("Order not found");
+    }
+
+    if(order.user.toString() != userId.toString()){
+        throw new Error("Not authorized to cancel this order");
+    }
+
+    if(order.orderStatus === "cancelled"){
+        throw new Error("Order is already cancelled");
+
+    }
+
+    if(order.orderStatus === "delivered"){
+        throw new Error("Order is already delivered and cannot be cancelled");
+    }
+
+    order.orderStatus = "cancelled";
+    await order.save();
+
+    return order;
+
+}
