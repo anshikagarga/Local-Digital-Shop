@@ -27,12 +27,15 @@ export const getAllProducts = async (req, res) => {
 
     try {
 
-        const products = await getAllProductsService();
+        const result = await getAllProductsService(req.query);
 
         res.status(200).json({
             success: true,
-            count: products.length,
-            data: products,
+            count: result.products.length,
+            totalProducts: result.totalProducts,
+            currentPage: result.currentPage,
+            totalPages: result.totalPages,
+            data: result.products,
         });
 
     } catch (error) {
@@ -42,10 +45,7 @@ export const getAllProducts = async (req, res) => {
             message: error.message,
         });
 
-    
-
     }
-
 };
 
 export const getProductById = async (req, res) => {
