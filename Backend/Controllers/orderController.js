@@ -1,30 +1,11 @@
-import { placeOrderService, getMyOrdersService , getOrderByIdService, cancelOrderService} from "../services/orderService.js";
+import {
+    createOrderService,
+    getMyOrdersService,
+    getOrderByIdService,
+    cancelOrderService,
+    updateOrderStatusService,
+} from "../services/orderService.js";
 
-export const placeOrder = async (req, res) => {
-
-    try {
-
-        const order = await placeOrderService(
-            req.user._id,
-            req.body
-        );
-
-        res.status(201).json({
-            success: true,
-            message: "Order placed successfully",
-            data: order,
-        });
-
-    } catch (error) {
-
-        res.status(400).json({
-            success: false,
-            message: error.message,
-        });
-
-    }
-
-};
 
 export const getMyOrders = async (req, res) => {
 
@@ -81,3 +62,47 @@ export const cancelOrder = async (req, res) => {
         });
     }
 }
+
+export const createOrder = async(req, res) => {
+    try{
+        const userId = req.user._id;
+        const order = await createOrderService(userId, req.body);
+
+        return res.status(201).json({
+            success: true,
+            message: "Order created successfully",
+            data: order,
+        });
+    }catch(error){
+        return res.status(400).json({
+            success: false,
+            message: error.message,
+        });
+    }
+        }
+
+        export const updateOrderStatus = async (req, res) => {
+
+    try {
+
+        const { status } = req.body;
+
+        const order = await updateOrderStatusService(
+            req.params.orderId,
+            status
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Order status updated successfully",
+            data: order,
+        });
+
+    } catch (error) {
+
+        return res.status(400).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
