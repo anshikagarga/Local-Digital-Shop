@@ -1,6 +1,6 @@
 import {
     registerService,
-    loginService, getProfileService,
+    loginService, getProfileService,resetPasswordService
 } from "../services/authService.js";
 
 export const registerUser = async (req, res) => {
@@ -69,4 +69,29 @@ export const getProfileUser = async (req, res) => {
 
     }
 
+};
+
+export const resetPassword = async (req, res) => {
+
+    try {
+
+        const { email, newPassword } = req.body;
+
+        const result = await resetPasswordService(
+            email,
+            newPassword
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: result.message,
+        });
+
+    } catch (error) {
+
+        return res.status(400).json({
+            success: false,
+            message: error.message,
+        });
+    }
 };

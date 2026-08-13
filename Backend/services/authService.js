@@ -66,3 +66,25 @@ export const getProfileService = async (userId) => {
     return user;
 
 };
+
+export const resetPasswordService = async (email, newPassword) => {
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    const hashedPassword = await bcrypt.hash(
+        newPassword,
+        10
+    );
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    return {
+        message: "Password reset successfully",
+    };
+};
