@@ -12,22 +12,46 @@ export const addProductService = async (productData, sellerId) => {
 
 export const getAllProductsService = async (query) => {
 
-    const { search, category, minPrice, maxPrice, sort , page=1, limit=10} = query;
+    const {
+        search,
+        category,
+        minPrice,
+        maxPrice,
+        sort,
+        page = 1,
+        limit = 10,
+    } = query;
+
     const pageNumber = Number(page);
     const limitNumber = Number(limit);
-    const skip = (pageNumber -1) * limitNumber;
 
-    let sortOption = {};
-    if(sort === "price_Asc"){
-        sortOption.price = 1;
-    }
-    if(sort === "price_Desc"){
-        sortOption.price = -1;
+    const skip = (pageNumber - 1) * limitNumber;
+
+    // Sorting
+    let sortOption = {
+        createdAt: -1,
+    };
+
+    if (sort === "price_asc") {
+        sortOption = { price: 1 };
     }
 
+    if (sort === "price_desc") {
+        sortOption = { price: -1 };
+    }
+
+    if (sort === "newest") {
+        sortOption = { createdAt: -1 };
+    }
+
+    if (sort === "oldest") {
+        sortOption = { createdAt: 1 };
+    }
+
+    // Filter
     const filter = {};
 
-    // Search by product name
+    // Search
     if (search) {
         filter.productName = {
             $regex: search,
@@ -35,36 +59,44 @@ export const getAllProductsService = async (query) => {
         };
     }
 
-    // Filter by category
+    // Category
     if (category) {
         filter.category = category;
     }
 
-    // Minimum price
-    if (minPrice) {
-        filter.price = {
-            $gte: Number(minPrice),
-        };
+    // Price
+    if (minPrice || maxPrice) {
+
+        filter.price = {};
+
+        if (minPrice) {
+            filter.price.$gte = Number(minPrice);
+        }
+
+        if (maxPrice) {
+            filter.price.$lte = Number(maxPrice);
+        }
     }
 
-    // Maximum price
-    if (maxPrice) {
-        filter.price = {
-            ...filter.price,
-            $lte: Number(maxPrice),
-        };
-    }
-
+    // Get products
     const products = await Product.find(filter)
         .populate("seller", "name email")
         .sort(sortOption)
         .skip(skip)
         .limit(limitNumber);
-    
-    
-    const totalProducts = await Product.countDocuments(filter);
 
-    return { products, totalProducts, currentPage: pageNumber, totalPages: Math.ceil(totalProducts / limitNumber) };
+    // Count
+    const totalProducts =
+        await Product.countDocuments(filter);
+
+    return {
+        products,
+        totalProducts,
+        currentPage: pageNumber,
+        totalPages: Math.ceil(
+            totalProducts / limitNumber
+        ),
+    };
 };
 
 export const getProductByIdService = async (id) => {
@@ -112,5 +144,6 @@ export const deleteProductService = async(productId, userId) => {
 
     await Product.findByIdAndDelete(productId);
 
-    return;
+    return product;
 }
+

@@ -3,7 +3,7 @@ import {
     getMyOrdersService,
     getOrderByIdService,
     cancelOrderService,
-    updateOrderStatusService,
+    updateOrderStatusService, updatePaymentStatusService
 } from "../services/orderService.js";
 
 
@@ -106,3 +106,21 @@ export const createOrder = async(req, res) => {
         });
     }
 };
+
+export const updatePaymentStatus = async(req, res)=>{
+    try{
+        const order = await updatePaymentStatusService(req.params.orderId, req.body.paymentStatus);
+
+        return res.status(200).json({
+            success: true,
+            message: "Payment status updated successfully",
+            data: order,
+        });
+    }catch(error){
+        return res.status(400).json({
+            success: false,
+            message: error.message,
+        })
+    }
+}
+        

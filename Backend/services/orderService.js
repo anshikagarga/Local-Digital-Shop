@@ -187,3 +187,35 @@ export const updateOrderStatusService = async (
 
     return order;
 };
+
+export const updatePaymentStatusService = async (
+    orderId,
+    paymentStatus
+) => {
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+        throw new Error("Order not found");
+    }
+
+    const allowedStatuses = [
+        "pending",
+        "completed",
+        "failed",
+    ];
+
+    if (!allowedStatuses.includes(paymentStatus)) {
+        throw new Error("Invalid payment status");
+    }
+
+    if (order.paymentStatus === "completed") {
+        throw new Error("Payment is already completed");
+    }
+
+    order.paymentStatus = paymentStatus;
+
+    await order.save();
+
+    return order;
+};

@@ -6,6 +6,7 @@ import {
     getOrderById,
     cancelOrder,
     updateOrderStatus,
+    updatePaymentStatus
 } from "../Controllers/orderController.js";
 
 import { protect } from "../middlewares/authMiddleware.js";
@@ -28,6 +29,12 @@ router.patch(
     "/:orderId/status",
     protect,
     updateOrderStatus
+);
+
+router.patch(
+    "/:orderId/payment",
+    protect,
+    updatePaymentStatus
 );
 
 export default router;
