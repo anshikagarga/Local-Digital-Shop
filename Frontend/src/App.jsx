@@ -1,41 +1,107 @@
 import { Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Cart from "./pages/Cart";
-import AddProduct from "./pages/AddProduct";
+import Navbar from "./Components/Navbar";
+import Footer from "./Components/Footer";
+
+import Home from "./Pages/Home";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+
+import Products from "./Pages/Products";
+import ProductDetails from "./Pages/ProductDetails";
+
+import Cart from "./Pages/Cart";
+import Wishlist from "./Pages/Wishlist";
+
+import Checkout from "./Pages/Checkout";
+
+import Orders from "./Pages/Orders";
+import OrderDetails from "./Pages/OrderDetails";
+
+import Profile from "./Pages/Profile";
+
+import AddProduct from "./Pages/AddProduct";
 
 function App() {
     return (
-       <Routes>
+        <>
+            <Navbar />
 
-    <Route
-        path="/"
-        element={<Home />}
-    />
+            <Routes>
 
-    <Route
-        path="/login"
-        element={<Login />}
-    />
+                {/* Home */}
+                <Route
+                    path="/"
+                    element={<Home />}
+                />
 
-    <Route
-        path="/register"
-        element={<Register />}
-    />
+                {/* Authentication */}
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
 
-    <Route
-        path="/cart"
-        element={<Cart />}
-    />
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
 
-    <Route
-        path="/add-product"
-        element={<AddProduct />}
-    />
+                {/* Products */}
+                <Route
+                    path="/products"
+                    element={<Products />}
+                />
 
-</Routes>
+                <Route
+                    path="/products/:id"
+                    element={<ProductDetails />}
+                />
+
+                {/* Cart */}
+                <Route
+                    path="/cart"
+                    element={<Cart />}
+                />
+
+                {/* Wishlist */}
+                <Route
+                    path="/wishlist"
+                    element={<Wishlist />}
+                />
+
+                {/* Checkout */}
+                <Route
+                    path="/checkout"
+                    element={<Checkout />}
+                />
+
+                {/* Orders */}
+                <Route
+                    path="/orders"
+                    element={<Orders />}
+                />
+
+                <Route
+                    path="/orders/:id"
+                    element={<OrderDetails />}
+                />
+
+                {/* Profile */}
+                <Route
+                    path="/profile"
+                    element={<Profile />}
+                />
+
+                {/* Seller */}
+                <Route
+                    path="/add-product"
+                    element={<AddProduct />}
+                />
+
+            </Routes>
+
+            <Footer />
+        </>
     );
 }
 

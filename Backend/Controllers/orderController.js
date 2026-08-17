@@ -32,7 +32,7 @@ export const getMyOrders = async (req, res) => {
 
 export const getOrderById = async (req, res) => {
     try{
-        const order = await getOrderByIdService(req.params.id, req.user._id);
+        const order = await getOrderByIdService(req.params.orderId, req.user._id);
 
         res.status(200).json({
             success: true,
@@ -48,7 +48,7 @@ export const getOrderById = async (req, res) => {
 
 export const cancelOrder = async (req, res) => {
     try{
-        const order = await cancelOrderService(req.params.id, req.user._id);
+        const order = await cancelOrderService(req.params.orderId, req.user._id);
 
         res.status(200).json({
             success: true,

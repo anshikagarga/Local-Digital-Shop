@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { apiRequest } from "../services/api";
+import { apiRequest } from "../Services/api";
 import "./AddProduct.css";
 
 function AddProduct() {

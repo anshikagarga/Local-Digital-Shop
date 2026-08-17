@@ -14,7 +14,7 @@ import App from "./App.jsx";
 
 import {
     AuthProvider,
-} from "./context/AuthContext.jsx";
+} from "./Context/AuthContext.jsx";
 
 import "./index.css";
 

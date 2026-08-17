@@ -1,4 +1,8 @@
-import cloudinary from "../config/cloudinary.js";
+import cloudinary from "../Config/cloudinary.js";
+import {
+    formatPublicProduct,
+    formatPublicProducts,
+} from "../utils/sanitize.js";
 
 import {
     addProductService,
@@ -102,7 +106,7 @@ export const getAllProducts = async (req, res) => {
 
             totalPages: result.totalPages,
 
-            data: result.products,
+            data: formatPublicProducts(result.products),
 
         });
 
@@ -131,7 +135,7 @@ export const getProductById = async (req, res) => {
 
             success: true,
 
-            data: product,
+            data: formatPublicProduct(product),
 
         });
 

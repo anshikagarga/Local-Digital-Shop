@@ -17,6 +17,8 @@ export const getAllProductsService = async (query) => {
         category,
         minPrice,
         maxPrice,
+        city,
+        pincode,
         sort,
         page = 1,
         limit = 10,
@@ -78,16 +80,30 @@ export const getAllProductsService = async (query) => {
         }
     }
 
-    // Get products
-    const products = await Product.find(filter)
-        .populate("seller", "name email")
+    // Get products — only populate seller fields safe for public display
+    let products = await Product.find(filter)
+        .populate("seller", "shopName city state pincode")
         .sort(sortOption)
         .skip(skip)
         .limit(limitNumber);
 
+    // Location filter by seller city/pincode if provided
+    if (city || pincode) {
+        products = products.filter((prod) => {
+            if (!prod.seller) return false;
+            let match = true;
+            if (city && prod.seller.city) {
+                match = match && prod.seller.city.toLowerCase().includes(city.toLowerCase());
+            }
+            if (pincode && prod.seller.pincode) {
+                match = match && prod.seller.pincode.includes(pincode);
+            }
+            return match;
+        });
+    }
+
     // Count
-    const totalProducts =
-        await Product.countDocuments(filter);
+    const totalProducts = await Product.countDocuments(filter);
 
     return {
         products,
@@ -100,12 +116,17 @@ export const getAllProductsService = async (query) => {
 };
 
 export const getProductByIdService = async (id) => {
-    const product = await Product.findById(id).populate("seller", "name email");
-    if(!product){
+    const product = await Product.findById(id).populate(
+        "seller",
+        "shopName city state pincode"
+    );
+
+    if (!product) {
         throw new Error("Product not found");
     }
+
     return product;
-}
+};
 
 
 export const updateProductService = async (

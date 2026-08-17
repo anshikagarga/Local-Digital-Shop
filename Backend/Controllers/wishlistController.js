@@ -3,6 +3,22 @@ import {
     getWishlistService,
     removeFromWishlistService
 } from "../services/wishlistService.js";
+import { formatPublicProduct } from "../utils/sanitize.js";
+
+const formatWishlistResponse = (wishlist) => {
+    if (!wishlist) {
+        return { products: [] };
+    }
+
+    const products = Array.isArray(wishlist.products)
+        ? wishlist.products.map((product) => formatPublicProduct(product))
+        : [];
+
+    return {
+        ...wishlist.toObject?.() ?? wishlist,
+        products,
+    };
+};
 
 export const addToWishlist = async(req,res) => {
     try{
@@ -10,10 +26,10 @@ export const addToWishlist = async(req,res) => {
         res.status(201).json({
             success: true,
             message: "Product added to wishlist",
-            data: wishlist,
+            data: formatWishlistResponse(wishlist),
         });
     }catch(error){
-        res.status(201).json({
+        res.status(400).json({
             success: false,
             message: error.message,
         })
@@ -30,12 +46,12 @@ export const getWishlist = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: wishlist,
+            data: formatWishlistResponse(wishlist),
         });
 
     } catch (error) {
 
-        res.status(404).json({
+        res.status(500).json({
             success: false,
             message: error.message,
         });
@@ -49,10 +65,10 @@ export const removeFromWishlist = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Product removed from wishlist",
-            data: wishlist,
+            data: formatWishlistResponse(wishlist),
         });
     }catch(error){
-        res.status(404).json({
+        res.status(400).json({
             success: false,
             message: error.message,
         });

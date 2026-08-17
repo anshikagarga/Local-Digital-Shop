@@ -21,12 +21,16 @@ export const updateProfileService = async (userId, updateData) => {
         }
     }
 
-    if (updateData.name) {
-        user.name = updateData.name;
-    }
-
-    if (updateData.email) {
-        user.email = updateData.email;
+    if (updateData.name) user.name = updateData.name;
+    if (updateData.email) user.email = updateData.email;
+    if (updateData.phone !== undefined) user.phone = updateData.phone;
+    if (updateData.address !== undefined) user.address = updateData.address;
+    if (updateData.city !== undefined) user.city = updateData.city;
+    if (updateData.state !== undefined) user.state = updateData.state;
+    if (updateData.pincode !== undefined) user.pincode = updateData.pincode;
+    if (updateData.shopName !== undefined) user.shopName = updateData.shopName;
+    if (updateData.role && ["customer", "seller"].includes(updateData.role)) {
+        user.role = updateData.role;
     }
 
     await user.save();

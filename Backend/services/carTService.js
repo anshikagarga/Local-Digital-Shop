@@ -84,7 +84,10 @@ export const getCartService = async (userId) => {
     );
 
     if (!cart) {
-        throw new Error("Cart not found");
+        return {
+            user: userId,
+            items: [],
+        };
     }
 
     return cart;
@@ -167,7 +170,10 @@ export const clearCartService = async (userId) => {
     });
 
     if (!cart) {
-        throw new Error("Cart not found");
+        return {
+            user: userId,
+            items: [],
+        };
     }
 
     cart.items = [];

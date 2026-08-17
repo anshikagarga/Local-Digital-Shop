@@ -1,186 +1,569 @@
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { apiRequest } from "../services/api";
+import "./Home.css";
 
 function Home() {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const data = await apiRequest("/products");
+    const categories = [
+        {
+            icon: "🥦",
+            title: "Groceries",
+            description: "Fresh everyday essentials",
+        },
+        {
+            icon: "👕",
+            title: "Fashion",
+            description: "Style from local sellers",
+        },
+        {
+            icon: "📱",
+            title: "Electronics",
+            description: "Smart gadgets & accessories",
+        },
+        {
+            icon: "🏠",
+            title: "Home",
+            description: "Everything for your home",
+        },
+    ];
 
-                setProducts(data.data);
-            } catch (error) {
-                console.error(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProducts();
-    }, []);
     return (
-        <>
-            <Navbar />
+        <main className="home-page">
 
-            {/* Hero Section */}
-            <section className="hero">
+            {/* ================= HERO ================= */}
+
+            <section className="home-hero">
+
+                <div className="hero-glow glow-one"></div>
+                <div className="hero-glow glow-two"></div>
 
                 <div className="hero-content">
 
-                    <span className="hero-badge">
+                    <motion.span
+                        className="hero-badge"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
                         🛍️ Your Local Marketplace
-                    </span>
+                    </motion.span>
 
-                    <h1>
+                    <motion.h1
+                        initial={{ opacity: 0, x: -70 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                            duration: 0.8,
+                            delay: 0.15,
+                        }}
+                    >
                         Shop Local.
                         <br />
-                        <span>Live Better.</span>
-                    </h1>
 
-                    <p>
+                        <span>
+                            Live Better.
+                        </span>
+                    </motion.h1>
+
+                    <motion.p
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                            duration: 0.7,
+                            delay: 0.3,
+                        }}
+                    >
                         Discover quality products from local
                         sellers and get everything you need
                         in one place.
-                    </p>
+                    </motion.p>
 
-                    <div className="hero-buttons">
+                    <motion.div
+                        className="hero-buttons"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.6,
+                            delay: 0.45,
+                        }}
+                    >
 
                         <Link
                             to="/products"
-                            className="primary-button"
+                            className="hero-primary-btn"
                         >
-                            Explore Products →
+                            Explore Products
+                            <span>→</span>
                         </Link>
 
                         <Link
                             to="/register"
-                            className="secondary-button"
+                            className="hero-secondary-btn"
                         >
                             Become a Seller
                         </Link>
 
-                    </div>
+                    </motion.div>
 
                 </div>
 
-                <div className="hero-visual">
 
-                    <div className="floating-card card-one">
-                        🥬
-                        <span>Fresh Groceries</span>
-                    </div>
+                {/* HERO VISUAL */}
 
-                    <div className="floating-card card-two">
-                        🛒
-                        <span>Easy Shopping</span>
-                    </div>
+                <motion.div
+                    className="hero-visual"
+                    initial={{
+                        opacity: 0,
+                        scale: 0.7,
+                        rotate: -8,
+                    }}
+                    animate={{
+                        opacity: 1,
+                        scale: 1,
+                        rotate: 0,
+                    }}
+                    transition={{
+                        duration: 1,
+                        delay: 0.3,
+                    }}
+                >
 
-                    <div className="shopping-circle">
+                    <motion.div
+                        className="hero-orbit orbit-one"
+                        animate={{
+                            rotate: 360,
+                        }}
+                        transition={{
+                            duration: 18,
+                            repeat: Infinity,
+                            ease: "linear",
+                        }}
+                    />
+
+                    <motion.div
+                        className="hero-orbit orbit-two"
+                        animate={{
+                            rotate: -360,
+                        }}
+                        transition={{
+                            duration: 25,
+                            repeat: Infinity,
+                            ease: "linear",
+                        }}
+                    />
+
+                    <motion.div
+                        className="shopping-circle"
+                        animate={{
+                            y: [0, -18, 0],
+                        }}
+                        transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    >
                         🛍️
-                    </div>
+                    </motion.div>
 
-                </div>
+
+                    <motion.div
+                        className="floating-card floating-card-one"
+                        animate={{
+                            y: [0, -12, 0],
+                        }}
+                        transition={{
+                            duration: 3.5,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    >
+                        <span>🥬</span>
+                        <div>
+                            <strong>Fresh Groceries</strong>
+                            <small>From local stores</small>
+                        </div>
+                    </motion.div>
+
+
+                    <motion.div
+                        className="floating-card floating-card-two"
+                        animate={{
+                            y: [0, 14, 0],
+                        }}
+                        transition={{
+                            duration: 4,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    >
+                        <span>🛒</span>
+                        <div>
+                            <strong>Easy Shopping</strong>
+                            <small>Everything nearby</small>
+                        </div>
+                    </motion.div>
+
+                </motion.div>
 
             </section>
 
 
-            {/* Categories */}
+            {/* ================= CATEGORY SECTION ================= */}
 
             <section className="categories-section">
 
-                <div className="section-heading">
+                <motion.div
+                    className="section-heading"
+                    initial={{
+                        opacity: 0,
+                        y: 50,
+                    }}
+                    whileInView={{
+                        opacity: 1,
+                        y: 0,
+                    }}
+                    viewport={{
+                        once: true,
+                        amount: 0.3,
+                    }}
+                    transition={{
+                        duration: 0.7,
+                    }}
+                >
 
-                    <span>EXPLORE</span>
+                    <span>
+                        EXPLORE
+                    </span>
 
                     <h2>
-                        Shop by Category
+                        Everything You Need,
+                        <br />
+                        <strong>Right Around You.</strong>
                     </h2>
 
                     <p>
-                        Find exactly what you're looking for.
+                        Discover products and services available
+                        from sellers in your local area.
                     </p>
 
-                </div>
+                </motion.div>
+
 
                 <div className="category-grid">
 
-                    <div className="category-card">
-                        <div>🥦</div>
-                        <h3>Groceries</h3>
-                        <p>Fresh everyday essentials</p>
-                    </div>
+                    {categories.map((category, index) => (
 
-                    <div className="category-card">
-                        <div>👕</div>
-                        <h3>Fashion</h3>
-                        <p>Style from local sellers</p>
-                    </div>
+                        <motion.div
+                            className="category-card"
+                            key={category.title}
+                            initial={{
+                                opacity: 0,
+                                y: 80,
+                                scale: 0.9,
+                            }}
+                            whileInView={{
+                                opacity: 1,
+                                y: 0,
+                                scale: 1,
+                            }}
+                            viewport={{
+                                once: true,
+                                amount: 0.2,
+                            }}
+                            transition={{
+                                duration: 0.7,
+                                delay: index * 0.12,
+                            }}
+                            whileHover={{
+                                y: -12,
+                                scale: 1.03,
+                            }}
+                        >
 
-                    <div className="category-card">
-                        <div>📱</div>
-                        <h3>Electronics</h3>
-                        <p>Smart gadgets & accessories</p>
-                    </div>
+                            <div className="category-icon">
+                                {category.icon}
+                            </div>
 
-                    <div className="category-card">
-                        <div>🏠</div>
-                        <h3>Home</h3>
-                        <p>Everything for your home</p>
-                    </div>
+                            <h3>
+                                {category.title}
+                            </h3>
+
+                            <p>
+                                {category.description}
+                            </p>
+
+                            <span className="category-arrow">
+                                Explore →
+                            </span>
+
+                        </motion.div>
+
+                    ))}
 
                 </div>
 
             </section>
 
 
-            {/* Featured Products */}
+            {/* ================= LOCAL SHOPPING SECTION ================= */}
 
-            <section className="featured-section">
+            <section className="local-section">
 
-                <div className="section-heading">
+                <motion.div
+                    className="local-content"
+                    initial={{
+                        opacity: 0,
+                        x: -80,
+                    }}
+                    whileInView={{
+                        opacity: 1,
+                        x: 0,
+                    }}
+                    viewport={{
+                        once: true,
+                        amount: 0.25,
+                    }}
+                    transition={{
+                        duration: 0.8,
+                    }}
+                >
 
-                    <span>POPULAR</span>
+                    <span className="section-label">
+                        WHY LOCAL?
+                    </span>
 
                     <h2>
-                        Featured Products
+                        Your neighborhood
+                        <span> at your fingertips.</span>
                     </h2>
 
                     <p>
-                        Popular products from our local sellers.
-                    </p>
-
-                </div>
-
-                <div className="featured-placeholder">
-
-                    <div>
-                        🛒
-                    </div>
-
-                    <h3>
-                        Amazing products are coming!
-                    </h3>
-
-                    <p>
-                        Explore our complete product collection.
+                        Find nearby shops, discover products,
+                        compare prices and support local sellers —
+                        all from one platform.
                     </p>
 
                     <Link
                         to="/products"
-                        className="primary-button"
+                        className="local-button"
                     >
-                        View All Products
+                        Discover Nearby Products →
                     </Link>
 
-                </div>
+                </motion.div>
+
+
+                <motion.div
+                    className="local-visual"
+                    initial={{
+                        opacity: 0,
+                        x: 80,
+                        rotate: 5,
+                    }}
+                    whileInView={{
+                        opacity: 1,
+                        x: 0,
+                        rotate: 0,
+                    }}
+                    viewport={{
+                        once: true,
+                        amount: 0.25,
+                    }}
+                    transition={{
+                        duration: 0.9,
+                    }}
+                >
+
+                    <div className="map-card">
+
+                        <div className="map-grid"></div>
+
+                        <motion.div
+                            className="location-pin pin-one"
+                            animate={{
+                                y: [0, -8, 0],
+                            }}
+                            transition={{
+                                duration: 2,
+                                repeat: Infinity,
+                            }}
+                        >
+                            📍
+                        </motion.div>
+
+                        <motion.div
+                            className="location-pin pin-two"
+                            animate={{
+                                y: [0, -10, 0],
+                            }}
+                            transition={{
+                                duration: 2.5,
+                                repeat: Infinity,
+                            }}
+                        >
+                            📍
+                        </motion.div>
+
+                        <motion.div
+                            className="location-pin pin-three"
+                            animate={{
+                                y: [0, -7, 0],
+                            }}
+                            transition={{
+                                duration: 3,
+                                repeat: Infinity,
+                            }}
+                        >
+                            📍
+                        </motion.div>
+
+                        <div className="map-center">
+                            <span>📍</span>
+                            <strong>You</strong>
+                        </div>
+
+                    </div>
+
+                </motion.div>
 
             </section>
 
-        </>
+
+            {/* ================= FEATURED SECTION ================= */}
+
+            <section className="featured-section">
+
+                <motion.div
+                    className="section-heading"
+                    initial={{
+                        opacity: 0,
+                        y: 60,
+                    }}
+                    whileInView={{
+                        opacity: 1,
+                        y: 0,
+                    }}
+                    viewport={{
+                        once: true,
+                    }}
+                    transition={{
+                        duration: 0.8,
+                    }}
+                >
+
+                    <span>
+                        POPULAR
+                    </span>
+
+                    <h2>
+                        Discover Local Favorites
+                    </h2>
+
+                    <p>
+                        Popular products from sellers around you.
+                    </p>
+
+                </motion.div>
+
+
+                <motion.div
+                    className="featured-placeholder"
+                    initial={{
+                        opacity: 0,
+                        scale: 0.85,
+                        y: 60,
+                    }}
+                    whileInView={{
+                        opacity: 1,
+                        scale: 1,
+                        y: 0,
+                    }}
+                    viewport={{
+                        once: true,
+                        amount: 0.25,
+                    }}
+                    transition={{
+                        duration: 0.8,
+                    }}
+                >
+
+                    <motion.div
+                        className="featured-icon"
+                        animate={{
+                            rotate: [0, -8, 8, 0],
+                        }}
+                        transition={{
+                            duration: 3,
+                            repeat: Infinity,
+                        }}
+                    >
+                        🛒
+                    </motion.div>
+
+                    <h3>
+                        Amazing products are waiting!
+                    </h3>
+
+                    <p>
+                        Explore our complete collection from
+                        local sellers.
+                    </p>
+
+                    <Link
+                        to="/products"
+                        className="hero-primary-btn"
+                    >
+                        View All Products →
+                    </Link>
+
+                </motion.div>
+
+            </section>
+
+
+            {/* ================= FINAL CTA ================= */}
+
+            <section className="home-cta">
+
+                <motion.div
+                    initial={{
+                        opacity: 0,
+                        y: 60,
+                    }}
+                    whileInView={{
+                        opacity: 1,
+                        y: 0,
+                    }}
+                    viewport={{
+                        once: true,
+                    }}
+                    transition={{
+                        duration: 0.8,
+                    }}
+                >
+
+                    <span>
+                        SHOP SMART. SHOP LOCAL.
+                    </span>
+
+                    <h2>
+                        Your local market,
+                        <br />
+                        <strong>one click away.</strong>
+                    </h2>
+
+                    <Link
+                        to="/products"
+                        className="cta-button"
+                    >
+                        Start Shopping →
+                    </Link>
+
+                </motion.div>
+
+            </section>
+
+        </main>
     );
 }
 

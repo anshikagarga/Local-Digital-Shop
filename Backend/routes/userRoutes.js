@@ -3,7 +3,7 @@ import { protect } from "../middlewares/authMiddleware.js";
 import {
     updateProfile,
     changePassword,
-} from "../controllers/userController.js";
+} from "../Controllers/userController.js";
 
 const router = express.Router();
 

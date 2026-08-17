@@ -1,4 +1,4 @@
-import Wishlist from "../models/wishlist.js";
+import Wishlist from "../models/Wishlist.js";
 import Product from "../models/Product.js";
 
 export const addToWishlistService = async (productId, userId) => {
@@ -35,13 +35,20 @@ export const getWishlistService = async (userId) => {
 
     const wishlist = await Wishlist.findOne({
         user: userId,
-    }).populate(
-        "products",
-        "productName price image category stock"
-    );
+    }).populate({
+        path: "products",
+        select: "productName price image category stock description",
+        populate: {
+            path: "seller",
+            select: "shopName city state pincode",
+        },
+    });
 
     if (!wishlist) {
-        throw new Error("Wishlist not found");
+        return {
+            user: userId,
+            products: [],
+        };
     }
 
     return wishlist;
@@ -53,7 +60,10 @@ export const removeFromWishlistService = async (productId, userId) => {
     });
 
     if (!wishlist) {
-        throw new Error("Wishlist not found");
+        return {
+            user: userId,
+            products: [],
+        };
     }
 
     const productExists = wishlist.products.some(
