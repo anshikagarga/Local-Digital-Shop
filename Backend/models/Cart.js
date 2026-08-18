@@ -17,6 +17,7 @@ const cartSchema = new mongoose.Schema(
                     required: true,
                 },
 
+                // Snapshot values
                 productName: {
                     type: String,
                     required: true,

@@ -11,21 +11,30 @@ function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setError("");
+   const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
 
-        try {
-            await login(email, password);
-            navigate("/");
-        } catch (err) {
-            if (err.message.includes("Failed to fetch") || err.message.includes("ERR_CONNECTION_REFUSED")) {
-                setError("Unable to connect to the server. Please check if the backend is running at http://localhost:5000.");
-            } else {
-                setError(err.message || "Invalid credentials. Please try again.");
-            }
+    try {
+        await login(email, password);
+        navigate("/");
+    } catch (err) {
+        console.error("LOGIN ERROR:", err);
+
+        if (
+            err.message?.includes("Failed to fetch") ||
+            err.message?.includes("ERR_CONNECTION_REFUSED")
+        ) {
+            setError(
+                "Unable to connect to the server. Please make sure the backend is running."
+            );
+        } else {
+            setError(
+                err.message || "Invalid email or password."
+            );
         }
-    };
+    }
+};
 
     return (
         <div className="auth-page">

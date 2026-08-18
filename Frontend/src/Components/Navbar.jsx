@@ -1,100 +1,163 @@
 import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import "./Navbar.css";
 
 function Navbar() {
-    const { user, logout } = useAuth();
+    const { user, logout, loading } = useAuth();
     const navigate = useNavigate();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const handleLogout = () => {
         logout();
-        setMobileMenuOpen(false);
+        setMenuOpen(false);
         navigate("/login");
     };
 
-    const closeMobileMenu = () => {
-        setMobileMenuOpen(false);
+    const closeMenu = () => {
+        setMenuOpen(false);
     };
 
     return (
-        <header className="navbar-header">
-            <div className="navbar-container">
-                {/* Brand Logo */}
-                <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
-                    <div className="logo-icon-badge">
-                        <span className="location-pin">📍</span>
-                        <span className="basket-icon">🛍️</span>
-                    </div>
-                    <div className="logo-text-box">
-                        <span className="logo-brand">LOCAL</span>
-                        <span className="logo-sub">DIGITAL SHOP</span>
-                    </div>
-                </Link>
+        <nav className="navbar">
 
-                {/* Mobile Menu Toggle Button */}
-                <button
-                    className={`mobile-menu-btn ${mobileMenuOpen ? "open" : ""}`}
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    aria-label="Toggle menu"
-                >
-                    <span className="bar"></span>
-                    <span className="bar"></span>
-                    <span className="bar"></span>
-                </button>
+            {/* Logo */}
+            <Link
+                to="/"
+                className="navbar-logo"
+                onClick={closeMenu}
+            >
+                <span className="logo-icon">📍</span>
+                <span>Local Digital Shop</span>
+            </Link>
 
-                {/* Navigation Links */}
-                <nav className={`navbar-links ${mobileMenuOpen ? "mobile-active" : ""}`}>
-                    <NavLink to="/" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} onClick={closeMobileMenu}>
+
+            {/* Mobile Menu Button */}
+            <button
+                className="mobile-menu-btn"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Toggle navigation"
+            >
+                {menuOpen ? "✕" : "☰"}
+            </button>
+
+
+            {/* Navigation */}
+            <div className={`navbar-content ${menuOpen ? "open" : ""}`}>
+
+                <div className="navbar-links">
+
+                    <Link
+                        to="/"
+                        onClick={closeMenu}
+                    >
                         Home
-                    </NavLink>
+                    </Link>
 
-                    <NavLink to="/products" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} onClick={closeMobileMenu}>
+                    <Link
+                        to="/products"
+                        onClick={closeMenu}
+                    >
                         Products
-                    </NavLink>
+                    </Link>
 
-                    <NavLink to="/wishlist" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} onClick={closeMobileMenu}>
-                        Wishlist ❤️
-                    </NavLink>
-
-                    <NavLink to="/cart" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} onClick={closeMobileMenu}>
-                        Cart 🛒
-                    </NavLink>
-
-                    {user ? (
+                    {user && (
                         <>
-                            <NavLink to="/orders" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} onClick={closeMobileMenu}>
-                                My Orders
-                            </NavLink>
+                            <Link
+                                to="/cart"
+                                onClick={closeMenu}
+                            >
+                                🛒 Cart
+                            </Link>
 
-                            <NavLink to="/profile" className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")} onClick={closeMobileMenu}>
-                                Profile 👤
-                            </NavLink>
+                            <Link
+                                to="/orders"
+                                onClick={closeMenu}
+                            >
+                                📦 Orders
+                            </Link>
+                        </>
+                    )}
 
-                            {(user.role === "seller" || user.shopName) && (
-                                <NavLink to="/add-product" className={({ isActive }) => (isActive ? "nav-link seller-link active" : "nav-link seller-link")} onClick={closeMobileMenu}>
-                                    + Add Product
-                                </NavLink>
-                            )}
+                    {user?.role === "seller" && (
+                        <Link
+                            to="/add-product"
+                            className="seller-link"
+                            onClick={closeMenu}
+                        >
+                            ➕ Add Product
+                        </Link>
+                    )}
 
-                            <button onClick={handleLogout} className="logout-btn">
+                </div>
+
+
+                {/* Right Side */}
+                <div className="navbar-actions">
+
+                    {loading ? (
+                        <span className="navbar-loading">
+                            Loading...
+                        </span>
+                    ) : user ? (
+
+                        <>
+
+                            <Link
+                                to="/profile"
+                                className="profile-link"
+                                onClick={closeMenu}
+                            >
+                                <span className="profile-avatar">
+                                    {user.name
+                                        ? user.name.charAt(0).toUpperCase()
+                                        : "U"}
+                                </span>
+
+                                <span>
+                                    {user.name || "Profile"}
+                                </span>
+                            </Link>
+
+                            <button
+                                className="logout-btn"
+                                onClick={handleLogout}
+                            >
                                 Logout
                             </button>
+
                         </>
+
                     ) : (
-                        <div className="auth-buttons">
-                            <Link to="/login" className="login-link-btn" onClick={closeMobileMenu}>
+
+                        <>
+
+                            <Link
+                                to="/login"
+                                className="login-link"
+                                onClick={closeMenu}
+                            >
                                 Login
                             </Link>
-                            <Link to="/register" className="register-link-btn" onClick={closeMobileMenu}>
+
+                            <Link
+                                to="/register"
+                                className="register-link"
+                                onClick={closeMenu}
+                            >
                                 Register
                             </Link>
-                        </div>
+
+                        </>
+
                     )}
-                </nav>
+
+                </div>
+
             </div>
-        </header>
+
+        </nav>
     );
 }
 

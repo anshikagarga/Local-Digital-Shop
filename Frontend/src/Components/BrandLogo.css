@@ -1,0 +1,110 @@
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+
+  color: var(--text-primary);
+
+  line-height: 1;
+  text-decoration: none;
+}
+
+.brand-logo-mark {
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 44px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 12px;
+
+  background: var(--primary);
+
+  box-shadow: var(--shadow-md);
+
+  transition:
+    transform var(--transition-normal),
+    box-shadow var(--transition-normal);
+}
+
+.brand-logo:hover .brand-logo-mark {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.brand-logo-mark svg {
+  width: 32px;
+  height: 32px;
+}
+
+.brand-logo-pin {
+  fill: var(--primary-dark);
+}
+
+.brand-logo-bag {
+  fill: var(--surface);
+
+  stroke: var(--surface);
+  stroke-width: 1.2;
+
+  stroke-linejoin: round;
+}
+
+.brand-logo-handle {
+  fill: none;
+
+  stroke: var(--primary-dark);
+  stroke-width: 2.2;
+
+  stroke-linecap: round;
+}
+
+.brand-logo-copy {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.brand-logo-name {
+  font-size: 1rem;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+
+  color: var(--text-primary);
+}
+
+.brand-logo-tagline {
+  font-size: 0.57rem;
+  font-weight: 800;
+
+  letter-spacing: 0.16em;
+
+  color: var(--primary);
+}
+
+.brand-logo--compact .brand-logo-mark {
+  width: 38px;
+  height: 38px;
+
+  flex-basis: 38px;
+
+  border-radius: 10px;
+}
+
+.brand-logo--compact .brand-logo-name {
+  font-size: 0.9rem;
+}
+
+.brand-logo--compact .brand-logo-tagline {
+  font-size: 0.52rem;
+}
+
+@media (max-width: 420px) {
+  .brand-logo-tagline {
+    display: none;
+  }
+}

@@ -2,81 +2,90 @@ import { Link } from "react-router-dom";
 import "./ProductCard.css";
 
 function ProductCard({ product }) {
+    const image =
+        product?.image ||
+        product?.imageUrl ||
+        product?.images?.[0];
 
     return (
-        <div className="product-card">
+        <article className="product-card">
 
-            {/* Product Image */}
+            <Link
+                to={`/products/${product._id}`}
+                className="product-image-link"
+            >
+                <div className="product-image-container">
 
-            <div className="product-image-container">
+                    {image ? (
+                        <img
+                            src={image}
+                            alt={product.productName}
+                            className="product-image"
+                        />
+                    ) : (
+                        <div className="product-image-placeholder">
+                            <span>🛍️</span>
+                            <p>No Image</p>
+                        </div>
+                    )}
 
-                {product.image ? (
-                    <img
-                        src={product.image}
-                        alt={product.productName}
-                        className="product-image"
-                    />
-                ) : (
-                    <div className="product-image-placeholder">
-                        🛍️
-                    </div>
-                )}
+                    <span className="product-category">
+                        {product.category || "Local"}
+                    </span>
 
-            </div>
-
-
-            {/* Product Information */}
+                </div>
+            </Link>
 
             <div className="product-card-content">
 
-                <span className="product-category">
-                    {product.category}
-                </span>
-
-                <h3 className="product-name">
-                    {product.productName}
-                </h3>
-
-                <p className="product-description">
-                    {product.description}
+                <p className="product-shop">
+                    📍 Local Seller
                 </p>
 
-                {product.seller && (
-                    <div className="product-seller-badge" style={{ fontSize: "0.8rem", color: "#4f46e5", fontWeight: "600", marginBottom: "0.75rem" }}>
-                        🏬 {product.seller.shopName || product.seller.name}{product.seller.city ? ` • 📍 ${product.seller.city}` : ""}
-                    </div>
-                )}
+                <Link
+                    to={`/products/${product._id}`}
+                    className="product-title"
+                >
+                    {product.productName}
+                </Link>
 
+                <p className="product-description">
+                    {product.description
+                        ? product.description.length > 75
+                            ? `${product.description.slice(0, 75)}...`
+                            : product.description
+                        : "Quality product available from your local seller."}
+                </p>
 
                 <div className="product-card-bottom">
 
-                    <div>
-
-                        <span className="product-price">
-                            ₹{product.price}
-                        </span>
-
-                        <p className="product-stock">
-                            {product.stock > 0
-                                ? `${product.stock} in stock`
-                                : "Out of stock"
-                            }
-                        </p>
-
+                    <div className="product-price">
+                        ₹{product.price}
                     </div>
 
-                    <Link
-                        to={`/products/${product._id}`}
-                        className="view-product-button"
+                    <span
+                        className={
+                            product.stock > 0
+                                ? "stock available"
+                                : "stock unavailable"
+                        }
                     >
-                        View
-                    </Link>
+                        {product.stock > 0
+                            ? `${product.stock} left`
+                            : "Out of stock"}
+                    </span>
 
                 </div>
 
-            </div>
+                <Link
+                    to={`/products/${product._id}`}
+                    className="view-product-btn"
+                >
+                    View Product →
+                </Link>
 
-        </div>
+            </div>
+        </article>
     );
 }
 
