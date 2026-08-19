@@ -79,3 +79,79 @@ export const changePasswordService = async (
 
     return true;
 };
+
+// ==========================================
+// GET SELLER SETTINGS
+// ==========================================
+
+export const getSellerSettingsService = async (userId) => {
+    const user = await User.findById(userId).select(
+        "sellerSettings role"
+    );
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.role !== "seller") {
+        throw new Error("Only sellers can access seller settings");
+    }
+
+    return {
+        online: user.sellerSettings?.online ?? true,
+        notifications:
+            user.sellerSettings?.notifications ?? true,
+        orderAlerts:
+            user.sellerSettings?.orderAlerts ?? true,
+        emailUpdates:
+            user.sellerSettings?.emailUpdates ?? false,
+    };
+};
+
+
+// ==========================================
+// UPDATE SELLER SETTINGS
+// ==========================================
+
+export const updateSellerSettingsService = async (
+    userId,
+    settings
+) => {
+    const user = await User.findById(userId);
+
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.role !== "seller") {
+        throw new Error(
+            "Only sellers can update seller settings"
+        );
+    }
+
+    user.sellerSettings = {
+        online:
+            typeof settings.online === "boolean"
+                ? settings.online
+                : user.sellerSettings?.online ?? true,
+
+        notifications:
+            typeof settings.notifications === "boolean"
+                ? settings.notifications
+                : user.sellerSettings?.notifications ?? true,
+
+        orderAlerts:
+            typeof settings.orderAlerts === "boolean"
+                ? settings.orderAlerts
+                : user.sellerSettings?.orderAlerts ?? true,
+
+        emailUpdates:
+            typeof settings.emailUpdates === "boolean"
+                ? settings.emailUpdates
+                : user.sellerSettings?.emailUpdates ?? false,
+    };
+
+    await user.save();
+
+    return user.sellerSettings;
+};

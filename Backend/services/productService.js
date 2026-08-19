@@ -165,11 +165,21 @@ export const getAllProductsService =
                 pageNumber,
             totalPages: Math.ceil(
                 totalProducts /
-                    limitNumber
+                limitNumber
             ),
         };
     };
 
+
+export const getMyProductsService = async (sellerId) => {
+    const products = await Product.find({
+        seller: sellerId,
+    })
+        .sort({ createdAt: -1 })
+        .select("productName description category price stock image createdAt");
+
+    return products;
+};
 // ==========================================
 // GET PRODUCT BY ID
 // ==========================================

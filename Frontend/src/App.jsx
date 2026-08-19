@@ -10,85 +10,183 @@ import Checkout from "./Pages/Checkout";
 import Orders from "./Pages/Orders";
 import OrderDetails from "./Pages/OrderDetails";
 import Profile from "./Pages/Profile";
-import AddProduct from "./Pages/AddProduct";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 
+import SellerDashboard from "./Pages/SellerDashboard";
+import SellerProducts from "./Pages/SellerProducts";
+import SellerOrders from "./Pages/SellerOrders";
+import ShopProfile from "./Pages/ShopProfile";
+import SellerSettings from "./Pages/SellerSettings";
+import AddProduct from "./Pages/AddProduct";
+
+import SellerLayout from "./Layouts/SellerLayout";
+
 import { AuthProvider } from "./Context/AuthContext";
 
+
+function CustomerLayout({ children }) {
+    return (
+        <>
+            <Navbar />
+            {children}
+        </>
+    );
+}
+
+
 function App() {
+
     return (
         <AuthProvider>
 
-            <Navbar />
-
             <Routes>
 
-                {/* Public Routes */}
+                {/* ================================= */}
+                {/* CUSTOMER / PUBLIC ROUTES */}
+                {/* ================================= */}
 
                 <Route
                     path="/"
-                    element={<Home />}
+                    element={
+                        <CustomerLayout>
+                            <Home />
+                        </CustomerLayout>
+                    }
                 />
 
                 <Route
                     path="/products"
-                    element={<Products />}
+                    element={
+                        <CustomerLayout>
+                            <Products />
+                        </CustomerLayout>
+                    }
                 />
 
                 <Route
                     path="/products/:id"
-                    element={<ProductDetails />}
+                    element={
+                        <CustomerLayout>
+                            <ProductDetails />
+                        </CustomerLayout>
+                    }
                 />
 
                 <Route
                     path="/login"
-                    element={<Login />}
+                    element={
+                        <CustomerLayout>
+                            <Login />
+                        </CustomerLayout>
+                    }
                 />
 
                 <Route
                     path="/register"
-                    element={<Register />}
+                    element={
+                        <CustomerLayout>
+                            <Register />
+                        </CustomerLayout>
+                    }
                 />
-
-
-                {/* User Routes */}
 
                 <Route
                     path="/cart"
-                    element={<Cart />}
+                    element={
+                        <CustomerLayout>
+                            <Cart />
+                        </CustomerLayout>
+                    }
                 />
 
                 <Route
                     path="/checkout"
-                    element={<Checkout />}
+                    element={
+                        <CustomerLayout>
+                            <Checkout />
+                        </CustomerLayout>
+                    }
                 />
 
                 <Route
                     path="/orders"
-                    element={<Orders />}
+                    element={
+                        <CustomerLayout>
+                            <Orders />
+                        </CustomerLayout>
+                    }
                 />
 
                 <Route
                     path="/orders/:id"
-                    element={<OrderDetails />}
+                    element={
+                        <CustomerLayout>
+                            <OrderDetails />
+                        </CustomerLayout>
+                    }
                 />
 
                 <Route
                     path="/profile"
-                    element={<Profile />}
+                    element={
+                        <CustomerLayout>
+                            <Profile />
+                        </CustomerLayout>
+                    }
                 />
 
 
-                {/* Seller */}
+                {/* ================================= */}
+                {/* SELLER ROUTES */}
+                {/* ================================= */}
 
                 <Route
-                    path="/add-product"
-                    element={<AddProduct />}
-                />
+                    path="/seller"
+                    element={<SellerLayout />}
+                >
+
+                    <Route
+                        index
+                        element={<SellerDashboard />}
+                    />
+
+                    <Route
+                        path="dashboard"
+                        element={<SellerDashboard />}
+                    />
+
+                    <Route
+                        path="products"
+                        element={<SellerProducts />}
+                    />
+
+                    <Route
+                        path="products/add"
+                        element={<AddProduct />}
+                    />
+
+                    <Route
+                        path="orders"
+                        element={<SellerOrders />}
+                    />
+
+                    <Route
+                        path="profile"
+                        element={<ShopProfile />}
+                    />
+
+                    <Route
+                        path="settings"
+                        element={<SellerSettings />}
+                    />
+
+                </Route>
 
 
+                {/* ================================= */}
                 {/* 404 */}
+                {/* ================================= */}
 
                 <Route
                     path="*"

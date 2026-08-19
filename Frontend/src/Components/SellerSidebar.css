@@ -1,0 +1,290 @@
+/* =========================================
+   SELLER SIDEBAR
+========================================= */
+
+.seller-sidebar {
+    width: 270px;
+    min-height: 100vh;
+
+    background: #ffffff;
+
+    border-right: 1px solid #e5e7eb;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 24px 16px;
+
+    position: sticky;
+    top: 0;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================
+   BRAND
+========================================= */
+
+.seller-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 8px 10px 28px;
+
+    border-bottom: 1px solid #eef0f3;
+}
+
+.seller-brand-icon {
+    width: 44px;
+    height: 44px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(
+        135deg,
+        #7c3aed,
+        #4f46e5
+    );
+
+    font-size: 21px;
+
+    box-shadow:
+        0 8px 20px rgba(79, 70, 229, 0.18);
+}
+
+.seller-brand h2 {
+    margin: 0;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #111827;
+}
+
+.seller-brand span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 12px;
+
+    color: #8b95a5;
+}
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+.seller-nav {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    margin-top: 28px;
+}
+
+.seller-nav-item {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 12px 14px;
+
+    border-radius: 11px;
+
+    text-decoration: none;
+
+    color: #667085;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.seller-nav-item span {
+    width: 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 17px;
+}
+
+.seller-nav-item:hover {
+    background: #f5f3ff;
+
+    color: #5b21b6;
+
+    transform: translateX(2px);
+}
+
+
+/* ACTIVE */
+
+.seller-nav-item.active {
+    background: linear-gradient(
+        135deg,
+        #f3e8ff,
+        #eef2ff
+    );
+
+    color: #5b21b6;
+
+    font-weight: 600;
+}
+
+.seller-nav-item.active span {
+    transform: scale(1.05);
+}
+
+
+/* =========================================
+   SIDEBAR BOTTOM
+========================================= */
+
+.seller-sidebar-bottom {
+    margin-top: auto;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #eef0f3;
+}
+
+.view-store-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border-radius: 11px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    color: #374151;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.25s ease;
+}
+
+.view-store-btn:hover {
+    background: #f5f3ff;
+
+    border-color: #ddd6fe;
+
+    color: #5b21b6;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   SELLER LAYOUT
+========================================= */
+
+.seller-layout {
+    min-height: 100vh;
+
+    display: flex;
+
+    background: #f8fafc;
+}
+
+.seller-main-content {
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .seller-sidebar {
+        width: 230px;
+    }
+
+    .seller-brand h2 {
+        font-size: 14px;
+    }
+
+    .seller-nav-item {
+        padding: 11px 12px;
+
+        font-size: 13px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .seller-layout {
+        flex-direction: column;
+    }
+
+    .seller-sidebar {
+        width: 100%;
+
+        min-height: auto;
+
+        position: relative;
+
+        padding: 16px;
+    }
+
+    .seller-brand {
+        padding-bottom: 16px;
+    }
+
+    .seller-nav {
+        flex-direction: row;
+
+        overflow-x: auto;
+
+        margin-top: 16px;
+
+        padding-bottom: 4px;
+    }
+
+    .seller-nav-item {
+        flex-shrink: 0;
+
+        white-space: nowrap;
+    }
+
+    .seller-sidebar-bottom {
+        margin-top: 16px;
+
+        padding-top: 16px;
+    }
+}

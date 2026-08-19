@@ -3,6 +3,7 @@ import express from "express";
 import {
     addProduct,
     getAllProducts,
+    getMyProducts,
     getProductById,
     updateProduct,
     deleteProduct,
@@ -21,6 +22,11 @@ router.post(
 );
 
 router.get("/", getAllProducts);
+router.get(
+    "/my-products",
+    protect,
+    getMyProducts
+);
 
 router.get("/:id", getProductById);
 

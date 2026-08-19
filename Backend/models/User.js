@@ -44,6 +44,27 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
+        sellerSettings: {
+            online: {
+                type: Boolean,
+                default: true,
+            },
+
+            notifications: {
+                type: Boolean,
+                default: true,
+            },
+
+            orderAlerts: {
+                type: Boolean,
+                default: true,
+            },
+
+            emailUpdates: {
+                type: Boolean,
+                default: false,
+            },
+        },
     },
     {
         timestamps: true,

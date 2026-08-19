@@ -11,6 +11,7 @@ import {
     getProductByIdService,
     updateProductService,
     deleteProductService,
+    getMyProductsService
 } from "../services/productService.js";
 
 // ==========================================
@@ -88,6 +89,26 @@ export const addProduct = async (req, res) => {
 // ==========================================
 // GET ALL PRODUCTS
 // ==========================================
+
+export const getMyProducts = async (req, res) => {
+    try {
+        const products = await getMyProductsService(
+            req.user._id
+        );
+
+        res.status(200).json({
+            success: true,
+            count: products.length,
+            data: products,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
 
 export const getAllProducts = async (
     req,

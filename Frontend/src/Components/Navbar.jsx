@@ -23,20 +23,29 @@ function Navbar() {
         <nav className="navbar">
 
             {/* Logo */}
+
             <Link
                 to="/"
                 className="navbar-logo"
                 onClick={closeMenu}
             >
-                <span className="logo-icon">📍</span>
-                <span>Local Digital Shop</span>
+                <span className="logo-icon">
+                    📍
+                </span>
+
+                <span>
+                    Local Digital Shop
+                </span>
             </Link>
 
 
             {/* Mobile Menu Button */}
+
             <button
                 className="mobile-menu-btn"
-                onClick={() => setMenuOpen(!menuOpen)}
+                onClick={() =>
+                    setMenuOpen(!menuOpen)
+                }
                 aria-label="Toggle navigation"
             >
                 {menuOpen ? "✕" : "☰"}
@@ -44,7 +53,12 @@ function Navbar() {
 
 
             {/* Navigation */}
-            <div className={`navbar-content ${menuOpen ? "open" : ""}`}>
+
+            <div
+                className={`navbar-content ${
+                    menuOpen ? "open" : ""
+                }`}
+            >
 
                 <div className="navbar-links">
 
@@ -55,12 +69,14 @@ function Navbar() {
                         Home
                     </Link>
 
+
                     <Link
                         to="/products"
                         onClick={closeMenu}
                     >
                         Products
                     </Link>
+
 
                     {user && (
                         <>
@@ -71,6 +87,7 @@ function Navbar() {
                                 🛒 Cart
                             </Link>
 
+
                             <Link
                                 to="/orders"
                                 onClick={closeMenu}
@@ -80,26 +97,19 @@ function Navbar() {
                         </>
                     )}
 
-                    {user?.role === "seller" && (
-                        <Link
-                            to="/add-product"
-                            className="seller-link"
-                            onClick={closeMenu}
-                        >
-                            ➕ Add Product
-                        </Link>
-                    )}
-
                 </div>
 
 
                 {/* Right Side */}
+
                 <div className="navbar-actions">
 
                     {loading ? (
+
                         <span className="navbar-loading">
                             Loading...
                         </span>
+
                     ) : user ? (
 
                         <>
@@ -111,7 +121,9 @@ function Navbar() {
                             >
                                 <span className="profile-avatar">
                                     {user.name
-                                        ? user.name.charAt(0).toUpperCase()
+                                        ? user.name
+                                            .charAt(0)
+                                            .toUpperCase()
                                         : "U"}
                                 </span>
 
@@ -119,6 +131,7 @@ function Navbar() {
                                     {user.name || "Profile"}
                                 </span>
                             </Link>
+
 
                             <button
                                 className="logout-btn"
@@ -140,6 +153,7 @@ function Navbar() {
                             >
                                 Login
                             </Link>
+
 
                             <Link
                                 to="/register"
