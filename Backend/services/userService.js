@@ -86,15 +86,11 @@ export const changePasswordService = async (
 
 export const getSellerSettingsService = async (userId) => {
     const user = await User.findById(userId).select(
-        "sellerSettings role"
+        "sellerSettings"
     );
 
     if (!user) {
         throw new Error("User not found");
-    }
-
-    if (user.role !== "seller") {
-        throw new Error("Only sellers can access seller settings");
     }
 
     return {
@@ -123,32 +119,17 @@ export const updateSellerSettingsService = async (
         throw new Error("User not found");
     }
 
-    if (user.role !== "seller") {
-        throw new Error(
-            "Only sellers can update seller settings"
-        );
-    }
-
     user.sellerSettings = {
-        online:
-            typeof settings.online === "boolean"
-                ? settings.online
-                : user.sellerSettings?.online ?? true,
-
-        notifications:
-            typeof settings.notifications === "boolean"
-                ? settings.notifications
-                : user.sellerSettings?.notifications ?? true,
-
-        orderAlerts:
-            typeof settings.orderAlerts === "boolean"
-                ? settings.orderAlerts
-                : user.sellerSettings?.orderAlerts ?? true,
-
-        emailUpdates:
-            typeof settings.emailUpdates === "boolean"
-                ? settings.emailUpdates
-                : user.sellerSettings?.emailUpdates ?? false,
+        online: Boolean(settings.online),
+        notifications: Boolean(
+            settings.notifications
+        ),
+        orderAlerts: Boolean(
+            settings.orderAlerts
+        ),
+        emailUpdates: Boolean(
+            settings.emailUpdates
+        ),
     };
 
     await user.save();

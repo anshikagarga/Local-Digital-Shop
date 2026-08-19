@@ -1,6 +1,7 @@
 import {
     updateProfileService,
-    changePasswordService,getSellerSettingsService,
+    changePasswordService,
+    getSellerSettingsService,
     updateSellerSettingsService
 } from "../services/userService.js";
 
@@ -58,23 +59,20 @@ export const changePassword = async (req, res) => {
 
 export const getSellerSettings = async (req, res) => {
     try {
-        const user = await User.findById(req.user._id).select(
-            "sellerSettings"
-        );
-
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-        }
+        const settings =
+            await getSellerSettingsService(
+                req.user._id
+            );
 
         res.status(200).json({
             success: true,
-            data: user.sellerSettings,
+            data: settings,
         });
     } catch (error) {
-        console.error("GET SELLER SETTINGS ERROR:", error);
+        console.error(
+            "GET SELLER SETTINGS ERROR:",
+            error
+        );
 
         res.status(500).json({
             success: false,
@@ -88,64 +86,30 @@ export const getSellerSettings = async (req, res) => {
 // UPDATE SELLER SETTINGS
 // ==========================================
 
-export const updateSellerSettings = async (req, res) => {
+export const updateSellerSettings = async (
+    req,
+    res
+) => {
     try {
-        const {
-            online,
-            notifications,
-            orderAlerts,
-            emailUpdates,
-        } = req.body;
-
-        const user = await User.findById(req.user._id);
-
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-        }
-
-        if (user.role !== "seller") {
-            return res.status(403).json({
-                success: false,
-                message: "Only sellers can update seller settings",
-            });
-        }
-
-        user.sellerSettings = {
-            online:
-                typeof online === "boolean"
-                    ? online
-                    : user.sellerSettings?.online ?? true,
-
-            notifications:
-                typeof notifications === "boolean"
-                    ? notifications
-                    : user.sellerSettings?.notifications ?? true,
-
-            orderAlerts:
-                typeof orderAlerts === "boolean"
-                    ? orderAlerts
-                    : user.sellerSettings?.orderAlerts ?? true,
-
-            emailUpdates:
-                typeof emailUpdates === "boolean"
-                    ? emailUpdates
-                    : user.sellerSettings?.emailUpdates ?? false,
-        };
-
-        await user.save();
+        const settings =
+            await updateSellerSettingsService(
+                req.user._id,
+                req.body
+            );
 
         res.status(200).json({
             success: true,
-            message: "Seller settings updated successfully",
-            data: user.sellerSettings,
+            message:
+                "Seller settings updated successfully",
+            data: settings,
         });
     } catch (error) {
-        console.error("UPDATE SELLER SETTINGS ERROR:", error);
+        console.error(
+            "UPDATE SELLER SETTINGS ERROR:",
+            error
+        );
 
-        res.status(500).json({
+        res.status(400).json({
             success: false,
             message: error.message,
         });

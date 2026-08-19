@@ -1,37 +1,31 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+
 import { apiRequest } from "../Services/api";
+
 import "./AddProduct.css";
 
-const INITIAL_FORM = {
-    productName: "",
-    description: "",
-    category: "",
-    price: "",
-    stock: "",
-};
-
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
-
 function AddProduct() {
-    const [formData, setFormData] = useState(INITIAL_FORM);
+    const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        productName: "",
+        description: "",
+        category: "",
+        price: "",
+        stock: "",
+    });
 
     const [image, setImage] = useState(null);
     const [preview, setPreview] = useState("");
 
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
     const [error, setError] = useState("");
 
-    const fileInputRef = useRef(null);
-    const previewUrlRef = useRef("");
-
-    useEffect(() => {
-        return () => {
-            if (previewUrlRef.current) {
-                URL.revokeObjectURL(previewUrlRef.current);
-            }
-        };
-    }, []);
+    // ==========================================
+    // INPUT CHANGE
+    // ==========================================
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -41,138 +35,123 @@ function AddProduct() {
             [name]: value,
         }));
 
-        setMessage("");
         setError("");
     };
+
+    // ==========================================
+    // IMAGE CHANGE
+    // ==========================================
 
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
 
         if (!file) return;
 
-        setMessage("");
-        setError("");
-
         if (!file.type.startsWith("image/")) {
-            setError("Please select a valid image file.");
-            e.target.value = "";
+            setError(
+                "Please select a valid image file."
+            );
             return;
         }
 
-        if (file.size > MAX_IMAGE_SIZE) {
-            setError("Image size must be less than 5 MB.");
-            e.target.value = "";
+        if (file.size > 5 * 1024 * 1024) {
+            setError(
+                "Image size should be less than 5MB."
+            );
             return;
         }
-
-        if (previewUrlRef.current) {
-            URL.revokeObjectURL(previewUrlRef.current);
-        }
-
-        const objectUrl = URL.createObjectURL(file);
-
-        previewUrlRef.current = objectUrl;
 
         setImage(file);
-        setPreview(objectUrl);
+
+        setPreview(
+            URL.createObjectURL(file)
+        );
+
+        setError("");
     };
 
-    const removeImage = () => {
-        if (previewUrlRef.current) {
-            URL.revokeObjectURL(previewUrlRef.current);
-            previewUrlRef.current = "";
-        }
-
-        setImage(null);
-        setPreview("");
-
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
-    };
-
-    const validateForm = () => {
-        const productName = formData.productName.trim();
-        const description = formData.description.trim();
-        const price = Number(formData.price);
-        const stock = Number(formData.stock);
-
-        if (!productName) {
-            return "Product name is required.";
-        }
-
-        if (productName.length < 2) {
-            return "Product name must contain at least 2 characters.";
-        }
-
-        if (!description) {
-            return "Product description is required.";
-        }
-
-        if (!formData.category) {
-            return "Please select a product category.";
-        }
-
-        if (formData.price === "" || Number.isNaN(price) || price < 0) {
-            return "Please enter a valid product price.";
-        }
-
-        if (formData.stock === "" || Number.isNaN(stock) || stock < 0) {
-            return "Please enter a valid stock quantity.";
-        }
-
-        return "";
-    };
-
-    const resetForm = () => {
-        setFormData(INITIAL_FORM);
-        removeImage();
-    };
+    // ==========================================
+    // SUBMIT
+    // ==========================================
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setMessage("");
         setError("");
 
-        const validationError = validateForm();
-
-        if (validationError) {
-            setError(validationError);
+        if (!image) {
+            setError(
+                "Please upload a product image."
+            );
             return;
         }
 
-        setLoading(true);
+        if (
+            Number(formData.price) < 0 ||
+            Number(formData.stock) < 0
+        ) {
+            setError(
+                "Price and stock cannot be negative."
+            );
+            return;
+        }
 
         try {
+            setLoading(true);
+
             const data = new FormData();
 
-            data.append("productName", formData.productName.trim());
-            data.append("description", formData.description.trim());
-            data.append("category", formData.category);
-            data.append("price", formData.price);
-            data.append("stock", formData.stock);
+            data.append(
+                "productName",
+                formData.productName
+            );
 
-            if (image) {
-                data.append("image", image);
-            }
+            data.append(
+                "description",
+                formData.description
+            );
 
-            const response = await apiRequest("/products", {
-                method: "POST",
-                body: data,
-            });
+            data.append(
+                "category",
+                formData.category
+            );
 
-            console.log("PRODUCT RESPONSE:", response);
+            data.append(
+                "price",
+                formData.price
+            );
 
-            setMessage("Product added successfully.");
+            data.append(
+                "stock",
+                formData.stock
+            );
 
-            resetForm();
+            data.append(
+                "image",
+                image
+            );
+
+            await apiRequest(
+                "/products",
+                {
+                    method: "POST",
+                    body: data,
+                }
+            );
+
+            navigate(
+                "/seller/products"
+            );
+
         } catch (err) {
-            console.error("PRODUCT ERROR:", err);
+            console.error(
+                "ADD PRODUCT ERROR:",
+                err
+            );
 
             setError(
-                err?.message ||
-                    "Unable to add the product. Please try again."
+                err.message ||
+                    "Unable to add product."
             );
         } finally {
             setLoading(false);
@@ -181,309 +160,429 @@ function AddProduct() {
 
     return (
         <main className="add-product-page">
-            <section className="add-product-card">
-                <header className="add-product-header">
-                    <div className="add-product-eyebrow">
-                        SELLER DASHBOARD
-                    </div>
 
-                    <h1>Add New Product</h1>
+            {/* ================================= */}
+            {/* HEADER */}
+            {/* ================================= */}
+
+            <motion.header
+                className="add-product-header"
+                initial={{
+                    opacity: 0,
+                    y: -20,
+                }}
+                animate={{
+                    opacity: 1,
+                    y: 0,
+                }}
+            >
+
+                <div>
+
+                    <span>
+                        INVENTORY
+                    </span>
+
+                    <h1>
+                        Add New Product
+                    </h1>
 
                     <p>
-                        Add your product to the local marketplace and
-                        connect with nearby customers.
+                        Add a new product to your
+                        local shop inventory.
                     </p>
-                </header>
 
-                {message && (
-                    <div
-                        className="product-alert product-alert-success"
-                        role="status"
-                        aria-live="polite"
-                    >
-                        <span className="alert-icon">✓</span>
-                        <span>{message}</span>
-                    </div>
-                )}
+                </div>
 
-                {error && (
-                    <div
-                        className="product-alert product-alert-error"
-                        role="alert"
-                        aria-live="assertive"
-                    >
-                        <span className="alert-icon">!</span>
-                        <span>{error}</span>
-                    </div>
-                )}
+                <div className="add-product-header-icon">
+                    📦
+                </div>
 
-                <form
-                    onSubmit={handleSubmit}
-                    className="product-form"
-                    noValidate
+            </motion.header>
+
+
+            {/* ================================= */}
+            {/* ERROR */}
+            {/* ================================= */}
+
+            {error && (
+                <motion.div
+                    className="add-product-error"
+                    initial={{
+                        opacity: 0,
+                        y: -10,
+                    }}
+                    animate={{
+                        opacity: 1,
+                        y: 0,
+                    }}
                 >
-                    <div className="form-section">
-                        <div className="section-heading">
-                            <div className="section-number">01</div>
+                    ⚠️ {error}
+                </motion.div>
+            )}
 
-                            <div>
-                                <h2>Product Information</h2>
-                                <p>
-                                    Tell customers about the product you
-                                    are selling.
-                                </p>
-                            </div>
+
+            {/* ================================= */}
+            {/* FORM */}
+            {/* ================================= */}
+
+            <motion.form
+                className="add-product-form"
+                onSubmit={handleSubmit}
+                initial={{
+                    opacity: 0,
+                    y: 25,
+                }}
+                animate={{
+                    opacity: 1,
+                    y: 0,
+                }}
+                transition={{
+                    delay: 0.1,
+                }}
+            >
+
+                {/* ================================= */}
+                {/* LEFT SIDE */}
+                {/* ================================= */}
+
+                <section className="add-product-card">
+
+                    <div className="add-card-heading">
+
+                        <div>
+                            <span>
+                                PRODUCT INFORMATION
+                            </span>
+
+                            <h2>
+                                Product Details
+                            </h2>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="productName">
-                                Product Name
-                                <span>*</span>
-                            </label>
-
-                            <input
-                                id="productName"
-                                type="text"
-                                name="productName"
-                                value={formData.productName}
-                                onChange={handleChange}
-                                placeholder="e.g. Basmati Rice"
-                                autoComplete="off"
-                                maxLength={100}
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="description">
-                                Description
-                                <span>*</span>
-                            </label>
-
-                            <textarea
-                                id="description"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                placeholder="Describe the quality, features and important details of your product..."
-                                rows={5}
-                                maxLength={1000}
-                                required
-                            />
-
-                            <div className="field-helper">
-                                {formData.description.length}/1000 characters
-                            </div>
-                        </div>
-
-                        <div className="form-group">
-                            <label htmlFor="category">
-                                Category
-                                <span>*</span>
-                            </label>
-
-                            <select
-                                id="category"
-                                name="category"
-                                value={formData.category}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">
-                                    Select a category
-                                </option>
-
-                                <option value="Groceries">
-                                    Groceries
-                                </option>
-
-                                <option value="Electronics">
-                                    Electronics
-                                </option>
-
-                                <option value="Clothing">
-                                    Clothing
-                                </option>
-
-                                <option value="Home">
-                                    Home & Living
-                                </option>
-
-                                <option value="Beauty">
-                                    Beauty
-                                </option>
-
-                                <option value="Other">
-                                    Other
-                                </option>
-                            </select>
-                        </div>
                     </div>
 
-                    <div className="form-section">
-                        <div className="section-heading">
-                            <div className="section-number">02</div>
 
-                            <div>
-                                <h2>Pricing & Inventory</h2>
-                                <p>
-                                    Set your selling price and available
-                                    stock.
-                                </p>
-                            </div>
-                        </div>
+                    {/* PRODUCT NAME */}
 
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="price">
-                                    Price
-                                    <span>*</span>
-                                </label>
+                    <div className="add-form-group">
 
-                                <div className="input-with-prefix">
-                                    <span>₹</span>
+                        <label>
+                            Product Name
+                        </label>
 
-                                    <input
-                                        id="price"
-                                        type="number"
-                                        name="price"
-                                        value={formData.price}
-                                        onChange={handleChange}
-                                        placeholder="0"
-                                        min="0"
-                                        step="0.01"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                        <input
+                            type="text"
+                            name="productName"
+                            value={
+                                formData.productName
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            placeholder="e.g. Wireless Headphones"
+                            required
+                        />
 
-                            <div className="form-group">
-                                <label htmlFor="stock">
-                                    Available Stock
-                                    <span>*</span>
-                                </label>
+                    </div>
+
+
+                    {/* CATEGORY */}
+
+                    <div className="add-form-group">
+
+                        <label>
+                            Category
+                        </label>
+
+                        <select
+                            name="category"
+                            value={
+                                formData.category
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            required
+                        >
+
+                            <option value="">
+                                Select category
+                            </option>
+
+                            <option value="Electronics">
+                                Electronics
+                            </option>
+
+                            <option value="Grocery">
+                                Grocery
+                            </option>
+
+                            <option value="Clothing">
+                                Clothing
+                            </option>
+
+                            <option value="Beauty">
+                                Beauty
+                            </option>
+
+                            <option value="Home">
+                                Home & Kitchen
+                            </option>
+
+                            <option value="Stationery">
+                                Stationery
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    {/* DESCRIPTION */}
+
+                    <div className="add-form-group">
+
+                        <label>
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            value={
+                                formData.description
+                            }
+                            onChange={
+                                handleChange
+                            }
+                            placeholder="Describe your product..."
+                            rows="6"
+                            required
+                        />
+
+                    </div>
+
+
+                    {/* PRICE + STOCK */}
+
+                    <div className="add-form-row">
+
+                        <div className="add-form-group">
+
+                            <label>
+                                Price
+                            </label>
+
+                            <div className="input-with-prefix">
+                                <span>
+                                    ₹
+                                </span>
 
                                 <input
-                                    id="stock"
                                     type="number"
-                                    name="stock"
-                                    value={formData.stock}
-                                    onChange={handleChange}
-                                    placeholder="0"
+                                    name="price"
+                                    value={
+                                        formData.price
+                                    }
+                                    onChange={
+                                        handleChange
+                                    }
                                     min="0"
-                                    step="1"
+                                    placeholder="0"
                                     required
                                 />
-                            </div>
-                        </div>
-                    </div>
 
-                    <div className="form-section">
-                        <div className="section-heading">
-                            <div className="section-number">03</div>
-
-                            <div>
-                                <h2>Product Image</h2>
-                                <p>
-                                    Upload a clear image of your product.
-                                </p>
                             </div>
+
                         </div>
 
-                        <div
-                            className={`image-upload ${
-                                preview ? "has-image" : ""
-                            }`}
-                            onClick={() =>
-                                fileInputRef.current?.click()
-                            }
-                            onKeyDown={(e) => {
-                                if (
-                                    e.key === "Enter" ||
-                                    e.key === " "
-                                ) {
-                                    fileInputRef.current?.click();
-                                }
-                            }}
-                            role="button"
-                            tabIndex={0}
-                            aria-label="Choose product image"
-                        >
+
+                        <div className="add-form-group">
+
+                            <label>
+                                Stock
+                            </label>
+
                             <input
-                                ref={fileInputRef}
-                                type="file"
-                                accept="image/png,image/jpeg,image/webp"
-                                onChange={handleImageChange}
-                                className="image-input"
+                                type="number"
+                                name="stock"
+                                value={
+                                    formData.stock
+                                }
+                                onChange={
+                                    handleChange
+                                }
+                                min="0"
+                                placeholder="0"
+                                required
                             />
 
-                            {!preview ? (
-                                <div className="upload-content">
-                                    <div className="upload-icon">
-                                        ↑
-                                    </div>
+                        </div>
 
+                    </div>
+
+                </section>
+
+
+                {/* ================================= */}
+                {/* RIGHT SIDE */}
+                {/* ================================= */}
+
+                <section className="add-product-card image-card">
+
+                    <div className="add-card-heading">
+
+                        <div>
+                            <span>
+                                PRODUCT MEDIA
+                            </span>
+
+                            <h2>
+                                Product Image
+                            </h2>
+                        </div>
+
+                    </div>
+
+
+                    {/* IMAGE UPLOAD */}
+
+                    <label
+                        className={`image-upload-area ${
+                            preview
+                                ? "has-image"
+                                : ""
+                        }`}
+                    >
+
+                        {preview ? (
+
+                            <div className="image-preview">
+
+                                <img
+                                    src={preview}
+                                    alt="Product preview"
+                                />
+
+                                <div className="image-preview-overlay">
                                     <strong>
-                                        Upload product image
+                                        Change Image
                                     </strong>
 
                                     <span>
-                                        PNG, JPG or WEBP · Maximum 5 MB
+                                        Click to upload another
                                     </span>
                                 </div>
-                            ) : (
-                                <div className="image-preview">
-                                    <img
-                                        src={preview}
-                                        alt={`${formData.productName || "Product"} preview`}
-                                    />
 
-                                    <div className="image-overlay">
-                                        <span>
-                                            Click to replace image
-                                        </span>
-                                    </div>
+                            </div>
+
+                        ) : (
+
+                            <div className="image-upload-content">
+
+                                <div className="upload-icon">
+                                    ☁️
                                 </div>
-                            )}
-                        </div>
 
-                        {preview && (
-                            <button
-                                type="button"
-                                className="remove-image-btn"
-                                onClick={removeImage}
-                            >
-                                Remove image
-                            </button>
+                                <h3>
+                                    Upload Product Image
+                                </h3>
+
+                                <p>
+                                    Click to browse your
+                                    computer
+                                </p>
+
+                                <span>
+                                    PNG, JPG or WEBP • Max 5MB
+                                </span>
+
+                            </div>
+
                         )}
-                    </div>
 
-                    <div className="form-footer">
+                        <input
+                            type="file"
+                            accept="image/png,image/jpeg,image/webp"
+                            onChange={
+                                handleImageChange
+                            }
+                        />
+
+                    </label>
+
+
+                    {/* TIP */}
+
+                    <div className="image-tip">
+                        <span>
+                            💡
+                        </span>
+
                         <p>
-                            Your product will be added to the marketplace
-                            after successful submission.
+                            Use a clear and attractive
+                            product image to help
+                            customers understand
+                            what you're selling.
                         </p>
-
-                        <button
-                            type="submit"
-                            className="add-product-btn"
-                            disabled={loading}
-                        >
-                            {loading ? (
-                                <>
-                                    <span className="button-spinner" />
-                                    Adding Product...
-                                </>
-                            ) : (
-                                <>
-                                    Add Product
-                                    <span>→</span>
-                                </>
-                            )}
-                        </button>
                     </div>
-                </form>
-            </section>
+
+                </section>
+
+
+                {/* ================================= */}
+                {/* ACTIONS */}
+                {/* ================================= */}
+
+                <div className="add-product-actions">
+
+                    <button
+                        type="button"
+                        className="cancel-product-btn"
+                        onClick={() =>
+                            navigate(
+                                "/seller/products"
+                            )
+                        }
+                        disabled={loading}
+                    >
+                        Cancel
+                    </button>
+
+                    <motion.button
+                        type="submit"
+                        className="save-product-btn"
+                        disabled={loading}
+                        whileHover={{
+                            y: -3,
+                        }}
+                        whileTap={{
+                            scale: 0.97,
+                        }}
+                    >
+
+                        {loading ? (
+                            <>
+                                <span className="add-button-spinner" />
+                                Adding Product...
+                            </>
+                        ) : (
+                            <>
+                                Add Product
+                                <span>→</span>
+                            </>
+                        )}
+
+                    </motion.button>
+
+                </div>
+
+            </motion.form>
+
         </main>
     );
 }
